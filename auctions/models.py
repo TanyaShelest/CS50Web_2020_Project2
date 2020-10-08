@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-
+from django.utils import timezone
 
 class User(AbstractUser):
     pass
@@ -22,6 +22,7 @@ class Listing(models.Model):
     photo = models.CharField(max_length=200, blank=True, default="auctions/images/default_image.jpg")
     description = models.TextField()
     start_price = models.IntegerField()
+    pub_date = models.DateTimeField('created', default=timezone.now())
 
     def __str__(self):
         return self.title
