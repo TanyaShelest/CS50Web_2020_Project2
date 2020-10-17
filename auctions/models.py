@@ -31,6 +31,7 @@ class Listing(models.Model):
     def __str__(self):
         return self.title
 
+
 class Watchlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     items = models.ManyToManyField(Listing)
@@ -43,16 +44,16 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     pub_date = models.DateTimeField(auto_now=True)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
-    comment_text = models.TextField()
+    text = models.TextField()
 
     def __str__(self):
-        return self.comment_text
+        return f"{self.text} about {self.listing}"
 
 
 class Bid(models.Model):
     value = models.IntegerField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE)
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
 
     def __str__(self):
-        return self.value
+        return f"{self.value} from {self.author}"
