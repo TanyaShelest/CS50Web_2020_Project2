@@ -5,9 +5,10 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.db.models import Max
 
 from .models import User, Listing, Watchlist
-from .forms import ListingForm, CommentForm
+from .forms import ListingForm, CommentForm, BidForm
 
 
 def index(request):
@@ -90,6 +91,7 @@ def show_listing(request, id):
     if request.user.is_authenticated:
         if request.method == "POST":
             comment_form = CommentForm(request.POST)
+            bid_form = BidForm(request.POST)
             if comment_form.is_valid():
                 comment = comment_form.save(commit=False)
                 comment.author = request.user
@@ -98,11 +100,27 @@ def show_listing(request, id):
                 return HttpResponseRedirect(reverse('show_listing', kwargs={
                     "id": id
                 }))
+            if bid_form.is_valid():
+                bid = bid_form.save(commit=False)
+                if bid.value > listing.current_price:
+                    listing.current_price = bid.value
+                    bid.author = request.user
+                    bid.listing = listing
+                    bid.save()
+                    listing.save()
+                    messages.add_message(request, messages.SUCCESS, 'You\'re bid is placed!')
+                    return HttpResponseRedirect(reverse('show_listing', kwargs={
+                    "id": id
+                }))
+                else:
+                    messages.add_message(request, messages.ERROR, 'You\'re bid must be greater than current price.')
+                    return HttpResponseRedirect(request.META.get('HTTP_REFERER','/')) 
     
     return render(request, "auctions/show_listing.html", {
         "listing": listing,
         "comments": comments, 
-        "comment_form": CommentForm()
+        "comment_form": CommentForm(),
+        "bid_form": BidForm()
     })
 
 
@@ -127,7 +145,7 @@ def add_to_watchlist(request, id):
     return HttpResponseRedirect(reverse('show_watchlist'))
 
 
-@login_required
+@login_required(login_url='login')
 def remove_from_watchlist(request, id):
     watchlist = Watchlist.objects.get(user=request.user)
     item = watchlist.items.get(pk=id)
@@ -136,3 +154,6 @@ def remove_from_watchlist(request, id):
     return HttpResponseRedirect(reverse('show_watchlist'))
 
 
+@login_required(login_url='login')
+def close_auction(request, id):
+    pass

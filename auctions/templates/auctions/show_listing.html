@@ -9,7 +9,17 @@
             <img src="{% static 'auctions/images/default_image.jpg' %}">
         </div>
         <div class="col-4">
-            <h5>Price: {{ listing.start_price }}</h5>
+            <h5>Current price: {{ listing.current_price }}</h5>
+            <div>
+                <form action="." method="POST">
+                {{ bid_form }}
+                {% csrf_token %}
+                <input type="submit" value="Submit">
+            </form> 
+            </div>
+            {% if request.user == listing.author %}
+                <a href="{% url 'close_auction' listing.id %}" class="btn btn-primary">Close this Auction</a>
+            {% endif %}
             <p class="text-muted">Created: {{ listing.pub_date }}</p>
             <p>Posted by: {{ listing.author }}</p>
         </div>

@@ -24,9 +24,10 @@ class Listing(models.Model):
     category = models.ManyToManyField(Category, blank=True, related_name="categories") 
     photo = models.CharField(max_length=200, blank=True, default="auctions/images/default_image.jpg")
     description = models.TextField()
-    start_price = models.IntegerField()
+    current_price = models.IntegerField()
     pub_date = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -51,7 +52,7 @@ class Comment(models.Model):
 
 
 class Bid(models.Model):
-    value = models.IntegerField()
+    value = models.IntegerField(verbose_name='your bid')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
 
