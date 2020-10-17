@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import Listing
+from .models import Listing, Comment
 
 
 class ListingForm(ModelForm):
@@ -9,4 +9,8 @@ class ListingForm(ModelForm):
         fields = ['title', 'category', 'description', 'photo', 'start_price']
 
         
-    
+class CommentForm(ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ['comment_text']    

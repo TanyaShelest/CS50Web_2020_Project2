@@ -1,0 +1,40 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="text-center">{{ listing.title }}</h2>
+
+    <div class="row  align-items-center">
+        <div class="col-4">
+            {% load static %}
+            <img src="{% static 'auctions/images/default_image.jpg' %}">
+        </div>
+        <div class="col-4">
+            <h5>Price: {{ listing.start_price }}</h5>
+            <p class="text-muted">Created: {{ listing.pub_date }}</p>
+            <p>Posted by: {{ listing.author }}</p>
+        </div>
+        <div class="col-4">
+            <a href="{% url 'add_to_watchlist' listing.id %}" class="btn btn-primary">Add to Watchlist</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <h4>Add comment:</h4>
+        <form action="." method="POST">
+            {{ comment_form }}
+            {% csrf_token %}
+        <p><input type="submit" value="Add comment"></p>        
+        </form>
+        </div>
+        <div class="col-6">
+            <h4>Comments:</h4>
+            {% for comment in comments %}
+                <p>{{ comment.author}} said: {{ comment.comment_text}}</p>
+                <p class="text-muted">{{ comment.pub_date }}</p>
+            {% empty %}
+                <p>No comments</p>
+            {% endfor %}
+
+            </div>
+    </div>
+{% endblock %}

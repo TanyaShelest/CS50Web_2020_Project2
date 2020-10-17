@@ -1,0 +1,27 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="text-center">{{ watchlist }}</h2>
+
+    {% for item in watchlist.items.all %}
+    <div class="row  align-items-center">
+        <div class="col-4">
+            {% load static %}
+            <img class="w-25" src="{% static 'auctions/images/default_image.jpg' %}">
+        </div>
+        <div class="col-4">
+            <h5>{{ item }}</h5>
+            <h5>Price: {{ item.start_price }}</h5>
+            <p class="text-muted">Created: {{ item.pub_date }}</p>
+        </div>
+        <div class="col-2">
+            <a class="btn" href="{% url 'show_listing' item.id %}">Details</a>
+        </div>
+        <div class="col-2">
+            <a class="btn" href="{% url 'remove_from_watchlist' item.id %}">Remove</a>
+        </div>
+    </div>
+    {% empty %}
+    <h6 class="text-muted">No listings in your watchlist</h6>
+    {% endfor %}
+{% endblock %}
