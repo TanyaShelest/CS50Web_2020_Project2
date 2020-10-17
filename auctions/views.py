@@ -7,13 +7,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Max
 
-from .models import User, Listing, Watchlist
+from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, CommentForm, BidForm
 
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.filter(active=True)
     })
 
 
@@ -106,6 +106,7 @@ def show_listing(request, id):
                     listing.current_price = bid.value
                     bid.author = request.user
                     bid.listing = listing
+                    listing.winner = bid.author
                     bid.save()
                     listing.save()
                     messages.add_message(request, messages.SUCCESS, 'You\'re bid is placed!')
@@ -156,4 +157,11 @@ def remove_from_watchlist(request, id):
 
 @login_required(login_url='login')
 def close_auction(request, id):
-    pass
+    listing = Listing.objects.get(pk=id)
+    listing.active = False
+    max_bid = Bid.objects.filter(listing=listing).order_by("value").last()
+    winner = max_bid.author
+    listing.save()
+    return HttpResponseRedirect(reverse('show_listing', kwargs={
+        "id": id
+    }))

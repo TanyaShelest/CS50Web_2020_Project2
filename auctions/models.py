@@ -28,6 +28,7 @@ class Listing(models.Model):
     pub_date = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
     active = models.BooleanField(default=True)
+    winner = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         return self.title
