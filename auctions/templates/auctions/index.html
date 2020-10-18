@@ -7,8 +7,12 @@
     {% for listing in listings %}
     <div class="row  align-items-center">
         <div class="col-4">
-            {% load static %}
-            <img src="{% static 'auctions/images/default_image.jpg' %}">
+            <img class="w-50" src="
+            {% if listing.image %}
+                {{ listing.image.url }}
+            {% else %}
+                {% static 'auctions/images/default_image.jpg' %}
+            {% endif %}">
         </div>
         <div class="col-4">
             <h5>{{ listing.title }}</h5>

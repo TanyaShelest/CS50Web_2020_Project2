@@ -5,7 +5,6 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Max
 
 from .models import User, Listing, Watchlist, Bid
 from .forms import ListingForm, CommentForm, BidForm
@@ -72,7 +71,7 @@ def register(request):
 @login_required
 def create_listing(request):
     if request.method == "POST":
-        form = ListingForm(request.POST)
+        form = ListingForm(request.POST, request.FILES)
         if form.is_valid():
             listing = form.save(commit=False)
             listing.author = request.user
@@ -165,3 +164,7 @@ def close_auction(request, id):
     return HttpResponseRedirect(reverse('show_listing', kwargs={
         "id": id
     }))
+
+
+def show_category(request, category_id):
+    category = Category.objects.get(pk=category_id)

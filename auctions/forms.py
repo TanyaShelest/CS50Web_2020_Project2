@@ -6,7 +6,7 @@ class ListingForm(ModelForm):
     
     class Meta:     
         model = Listing
-        fields = ['title', 'category', 'description', 'photo', 'current_price']
+        fields = ['title', 'category', 'description', 'image', 'current_price']
 
         
 class CommentForm(ModelForm):

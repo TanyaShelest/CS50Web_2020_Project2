@@ -21,8 +21,8 @@ class User(AbstractUser):
 
 class Listing(models.Model):
     title = models.CharField(max_length=200)
-    category = models.ManyToManyField(Category, blank=True, related_name="categories") 
-    photo = models.CharField(max_length=200, blank=True, default="auctions/images/default_image.jpg")
+    category = models.ForeignKey(Category, blank=True, on_delete=models.CASCADE) 
+    image = models.ImageField(upload_to='listings/', blank=True)
     description = models.TextField()
     current_price = models.IntegerField()
     pub_date = models.DateTimeField(auto_now=True)
