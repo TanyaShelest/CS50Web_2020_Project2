@@ -1,17 +1,22 @@
 {% extends "auctions/layout.html" %}
+{% load static %}
 
 {% block body %}
-    <h2 class="text-center">{{ watchlist }}</h2>
+    <h2 class="text-center my-5">{{ watchlist }}</h2>
 
     {% for item in watchlist.items.all %}
-    <div class="row  align-items-center">
-        <div class="col-4">
-            {% load static %}
-            <img class="w-25" src="{% static 'auctions/images/default_image.jpg' %}">
+    <div class="row align-items-center" id="watchlistItem">
+        <div class="col-4 pl-5">
+            <img class="w-50" src="
+            {% if item.image %}
+                {{ item.image.url }}
+            {% else %}
+                {% static 'auctions/images/default_image.jpg' %}
+            {% endif %}">
         </div>
         <div class="col-4">
             <h5>{{ item }}</h5>
-            <h5>Price: {{ item.start_price }}</h5>
+            <h5>Price: {{ item.current_price }}</h5>
             <p class="text-muted">Created: {{ item.pub_date }}</p>
         </div>
         <div class="col-2">
@@ -22,6 +27,6 @@
         </div>
     </div>
     {% empty %}
-    <h6 class="text-muted">No listings in your watchlist</h6>
+        <h6 class="text-muted text-center">No listings in your watchlist</h6>
     {% endfor %}
 {% endblock %}

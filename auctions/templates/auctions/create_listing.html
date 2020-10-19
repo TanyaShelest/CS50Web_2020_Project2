@@ -1,5 +1,16 @@
-<form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<h2 class="text-center my-5">Create listing</h2>
+<div class="row">
+    <div class="offset-3 col-6">
+        <form action="{% url 'create' %}" method="post" enctype="multipart/form-data">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">Create</button> 
+        </form>
+    </div>
+</div>
+{% endblock %}

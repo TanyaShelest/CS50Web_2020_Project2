@@ -1,7 +1,86 @@
 body {
     padding: 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+h1, h2 {
+    color: rgb(114, 114, 114);
+    font-weight: 400;
 }
 
 div {
     margin-bottom: 20px;
+}
+
+h1.display-3 {
+    color: #FF4100;
+    text-shadow: 3px 5px 3px rgba(61, 91, 104, 0.45);
+    font-weight: 400;
+}
+
+h3, h4, h5, h6 {
+    color:  rgb(85, 85, 85);
+}
+
+.jumbotron {
+    background-color: #fff !important;
+}
+
+.container-fluid nav {
+    background-image: linear-gradient(to bottom, #3E97D1 0%,  #0A67A3 100%);
+    width: 100%;
+    height: 75px;
+    border-radius: 3px;
+    box-shadow: 3px 3px 3px 3px rgba(61, 91, 104, 0.45);
+}
+
+span.text-muted {
+    color: #5e839b !important;
+}
+
+a.nav-link {
+    color: #fff;
+    font-size: large;
+    border-radius: 3px;
+}
+
+a.nav-link:hover {
+    background-color:  #0A67A3;
+    color:  #fa6c3d;
+}
+
+.btn {
+    background-color: #65A6D1;
+    color: #fff;
+    font-weight: 500;
+}
+
+.btn:hover {
+    background-color: #3E97D1;
+    color: #fff;
+}
+
+p a {
+    color: #24587A;
+}
+
+p a:hover {
+    text-decoration: none;
+    color: #0A67A3;
+}
+
+.card {
+    border: 1px solid #24587A;
+}
+
+a.card-link {
+    color: #FF4100;
+}
+
+h3.card-title {
+    color: #03426A;
+}
+
+div#watchlistItem {
+    border-top: 1px solid #65A6D1;
 }

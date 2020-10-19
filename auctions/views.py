@@ -6,13 +6,14 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .models import User, Listing, Watchlist, Bid
+from .models import Category, User, Listing, Watchlist, Bid
 from .forms import ListingForm, CommentForm, BidForm
 
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.filter(active=True)
+        "listings": Listing.objects.filter(active=True),
+        "categories": Category.objects.all()
     })
 
 
@@ -76,8 +77,7 @@ def create_listing(request):
             listing = form.save(commit=False)
             listing.author = request.user
             listing.save()
-            return HttpResponseRedirect(reverse('index'))
-    
+            return HttpResponseRedirect(reverse("index"))
     form = ListingForm()
     return render(request, "auctions/create_listing.html", {
         "form": form
@@ -96,7 +96,7 @@ def show_listing(request, id):
                 comment.author = request.user
                 comment.listing = listing
                 comment.save()
-                return HttpResponseRedirect(reverse('show_listing', kwargs={
+                return HttpResponseRedirect(reverse("show_listing", kwargs={
                     "id": id
                 }))
             if bid_form.is_valid():
@@ -108,13 +108,13 @@ def show_listing(request, id):
                     listing.winner = bid.author
                     bid.save()
                     listing.save()
-                    messages.add_message(request, messages.SUCCESS, 'You\'re bid is placed!')
-                    return HttpResponseRedirect(reverse('show_listing', kwargs={
+                    messages.add_message(request, messages.SUCCESS, "You\'re bid is placed!")
+                    return HttpResponseRedirect(reverse("show_listing", kwargs={
                     "id": id
                 }))
                 else:
-                    messages.add_message(request, messages.ERROR, 'You\'re bid must be greater than current price.')
-                    return HttpResponseRedirect(request.META.get('HTTP_REFERER','/')) 
+                    messages.add_message(request, messages.ERROR, "You\'re bid must be greater than current price.")
+                    return HttpResponseRedirect(request.META.get("HTTP_REFERER","/")) 
     
     return render(request, "auctions/show_listing.html", {
         "listing": listing,
@@ -124,7 +124,7 @@ def show_listing(request, id):
     })
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def show_watchlist(request):
     watchlist = Watchlist.objects.get(user=request.user)
     return render(request, "auctions/show_watchlist.html", {
@@ -132,39 +132,47 @@ def show_watchlist(request):
     })
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def add_to_watchlist(request, id):
     item = Listing.objects.get(pk=id)
     if Watchlist.objects.filter(user=request.user, items=id).exists():
-        messages.add_message(request, messages.ERROR, 'You\'ve already added this item to your watchlist.')
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER','/'))
+        messages.add_message(request, messages.ERROR, "You\'ve already added this item to your watchlist.")
+        return HttpResponseRedirect(request.META.get("HTTP_REFERER","/"))
     watchlist, created = Watchlist.objects.get_or_create(user=request.user)
     watchlist.items.add(item)
+    messages.add_message(request, messages.SUCCESS, "Successfully added to your watchlist!")
+    return HttpResponseRedirect(reverse("show_watchlist"))
 
-    messages.add_message(request, messages.SUCCESS, 'Successfully added to your watchlist!')
-    return HttpResponseRedirect(reverse('show_watchlist'))
 
-
-@login_required(login_url='login')
+@login_required(login_url="login")
 def remove_from_watchlist(request, id):
     watchlist = Watchlist.objects.get(user=request.user)
     item = watchlist.items.get(pk=id)
     watchlist.items.remove(item)
-    messages.add_message(request, messages.SUCCESS, 'Removed from your watchlist!')
-    return HttpResponseRedirect(reverse('show_watchlist'))
+    messages.add_message(request, messages.SUCCESS, "Removed from your watchlist.")
+    return HttpResponseRedirect(reverse("show_watchlist"))
 
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def close_auction(request, id):
     listing = Listing.objects.get(pk=id)
     listing.active = False
     max_bid = Bid.objects.filter(listing=listing).order_by("value").last()
     winner = max_bid.author
     listing.save()
-    return HttpResponseRedirect(reverse('show_listing', kwargs={
+    return HttpResponseRedirect(reverse("show_listing", kwargs={
         "id": id
     }))
 
 
-def show_category(request, category_id):
-    category = Category.objects.get(pk=category_id)
+def show_category(request, id):
+    category = Category.objects.get(pk=id)
+    listings = Listing.objects.filter(category=category)
+    return render(request, "auctions/show_category.html", {
+        "category": category,
+        "listings": listings
+    })
+
+
+def category_list(request):
+    return render(request, "auctions/category_list.html")

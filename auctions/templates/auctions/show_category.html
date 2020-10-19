@@ -2,7 +2,8 @@
 {% load static %}
 
 {% block body %}
-    <h2 class="text-center my-5">Active Listings</h2>
+    <h2 class="text-center my-5">Listings in <b>{{ category }}</b></h2>
+
     {% for listing in listings %}
     <div class="row align-items-center">
         <div class="col-4">
@@ -14,15 +15,15 @@
             {% endif %}">
         </div>
         <div class="col-4">
-            <h3>{{ listing.title }}</h3>
+            <h5>{{ listing }}</h5>
             <h5>Price: {{ listing.current_price }}</h5>
-            <p><span class="text-muted">Category:</span> <a href="{% url 'show_category' listing.category.id %}">{{ listing.category }}</a></p>
+            <p class="text-muted">Created: {{ listing.pub_date }}</p>
         </div>
-        <div class="col-4 text-center">
+        <div class="col-2">
             <a class="btn" href="{% url 'show_listing' listing.id %}">Details</a>
         </div>
     </div>
     {% empty %}
-        <h6 class="text-muted">No listings</h6>
+        <h6 class="text-muted text-center">No listings in category <b>{{ category }}</b></h6>
     {% endfor %}
 {% endblock %}

@@ -2,61 +2,61 @@
 {% load static %}
 
 {% block body %}
-    <h2 class="text-center">{{ listing.title }}</h2>
-    <div class="row  align-items-center">
-        <div class="col-4">
+    <h2 class="text-center my-5">{{ listing.title }}</h2>
+    <div class="row text-center align-items-baseline">
+        <div class="col-4 pr-3">
             <img class="w-50" src="
                         {% if listing.image %}
-                {{ listing.image.url }}
-            {% else %}
-                {% static 'auctions/images/default_image.jpg' %}
-            {% endif %}">
+                            {{ listing.image.url }}
+                        {% else %}
+                            {% static 'auctions/images/default_image.jpg' %}
+                        {% endif %}">
+            <div class="p-3">
+                <p class="text-center">{{ listing.description }}</p>
+            </div>
         </div>
-        <div class="col-4">
-            {% if listing.active %}
-                <p class="text-muted">Created: {{ listing.pub_date }}</p>
-                <p>Posted by: {{ listing.author }}</p>
-                <p>{{ listing.description }}</p>
-                <div>
-                    <h5>Current price: {{ listing.current_price }}</h5>
-                    <form action="." method="POST">
+        <div class="col-4 pr-3">
+        {% if listing.active %}
+            <div>
+                <h5>Current price: {{ listing.current_price }}</h5>
+                <form action="." method="POST">
                     {{ bid_form }}
                     {% csrf_token %}
-                    <input type="submit" value="Submit">
-                </form> 
-                </div>
-                {% if request.user == listing.author %}
-                    <a href="{% url 'close_auction' listing.id %}" class="btn btn-primary">Close the Auction</a>
-                {% endif %}
-                
-            </div>
-            <div class="col-4">
-                <a href="{% url 'add_to_watchlist' listing.id %}" class="btn btn-primary">Add to Watchlist</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-6">
-                <h4>Add comment:</h4>
-                <form action="." method="POST">
-                    {{ comment_form }}
-                    {% csrf_token %}
-                <p><input type="submit" value="Add comment"></p>        
+                    <button type="submit" class="btn">Submit</button>
                 </form>
+                <br><br>
+                <a href="{% url 'add_to_watchlist' listing.id %}" class="btn">Add to Watchlist</a> 
             </div>
-        
+            {% if request.user == listing.author %}
+                <a href="{% url 'close_auction' listing.id %}" class="btn">Close the Auction</a>
+            {% endif %}                
+        </div>
+        <div class="col-4 pr-3 text-left">
+            <p><span class="text-muted">Created:</span> {{ listing.pub_date }}</p>
+            <p><span class="text-muted">Listed by:</span> {{ listing.author }}</p>
+            <p><span class="text-muted">Category:</span> <a href="{% url 'show_category' listing.category.id %}">{{ listing.category }}</a></p>            </div>
+        </div>
+    <div class="row text-center">
+        <div class="col-6">
+            <h4>Add comment:</h4>
+            <form action="." method="POST">
+                {{ comment_form.as_p }}
+                {% csrf_token %}
+            <button type="submit" class="btn">Add</button>       
+            </form>
+        </div>    
         <div class="col-6">
             <h4>Comments:</h4>
             {% for comment in comments %}
-                <p>{{ comment.author}} said: {{ comment.comment_text}}</p>
+                <p><span class="text-muted">{{ comment.author}} said:</span> {{ comment.text}}</p>
                 <p class="text-muted">{{ comment.pub_date }}</p>
             {% empty %}
-                <p>No comments</p>
+                <p class="text-muted">No comments</p>
             {% endfor %}
-
-            </div>
+        </div>
     </div>
     {% else %}
-    <h3 class="text-muted">The auction is closed</h3>
-    <h5>Winner is {{ listing.winner }}</h5>
+        <h3 class="text-muted">The auction is closed</h3>
+        <h5>Winner is {{ listing.winner }}</h5>
     {% endif %}
 {% endblock %}

@@ -2,6 +2,7 @@ from django.urls import path
 
 from . import views
 
+
 urlpatterns = [
     path("", views.index, name="index"),
     path("login", views.login_view, name="login"),
@@ -13,6 +14,6 @@ urlpatterns = [
     path("remove_from_watchlist/<int:id>/", views.remove_from_watchlist, name="remove_from_watchlist"),
     path("watchlist", views.show_watchlist, name="show_watchlist"),
     path("close_auction/<int:id>/", views.close_auction, name="close_auction"),
-    path("category/<int:id>/", views.show_category, name="show_category")
+    path("category/<int:id>/", views.show_category, name="show_category"),
+    path("categories", views.category_list, name="category_list")
 ]
-
